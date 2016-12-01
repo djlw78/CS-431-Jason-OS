@@ -10,7 +10,7 @@ namespace CosmosKernel1
     {
         public string name;
         public string value;
-        public Int32 number;
+        public int number;
 
         public Variable(string name, string value)
         {
@@ -18,12 +18,14 @@ namespace CosmosKernel1
             this.value = value;
         }
 
+        
+
         public void setName(string name)
         {
             this.name = name;
         }
 
-        public void setValue(Int32 number)
+        public void setValue(int number)
         {
             this.number = number;
         }
@@ -33,9 +35,20 @@ namespace CosmosKernel1
             return name;
         }
 
-        public Int32 getValueString()
+        public int getValue(string value)
         {
-            return Int32.Parse(value);
+            return int.Parse(value);
         }
+
+        public string getValue()
+        {
+            return value;
+        }
+
+        public int getNumberValue()
+        {
+            return number;
+        }
+
     }
 }

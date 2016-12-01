@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CosmosKernel1
 {
-    class File
+    public class File
     {
         string name;
         String extension;
@@ -45,7 +45,7 @@ namespace CosmosKernel1
 
         public int getSize()
         {
-            return size;
+            return ++size;
         }
     }
 }
