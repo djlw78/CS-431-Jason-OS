@@ -53,21 +53,29 @@ namespace CosmosKernel1
                     break;
 
                 case "create":
-                    temp = "";
+                    bool end = false;
+                    int lineNum = 0;
+                    string buffer = "";
                     string[] filename = subStrings[1].Split('.');
                     File file = new File(filename[0], filename[1]);
-                    while (argument != "save")
-                    {
-                        argument = Console.ReadLine();
-                        if (argument == "save")
-                        {
-                            file.setData(temp);
-                        }
-                        temp += "\n" + argument;
 
+                    while (!end)
+                    {
+                        Console.Write(lineNum + ": ");
+                        string read = Console.ReadLine();
+                        if (read == "save")
+                        {
+                            break;
+                        }
+                        buffer += read + '\n';
+                        lineNum++;
                     }
-                    Console.WriteLine(temp);
+
+                    file.setContent(buffer);
+                    file.setLineCount(lineNum);
+
                     Console.WriteLine("***File saved.***");
+                    file.setFileName(filename[0] + "." + filename[1]);
                     Kernel.file_directory.AddLast(file);
 
                     break;
@@ -77,7 +85,7 @@ namespace CosmosKernel1
 
                     while (filelist != null)
                     {
-                        Console.WriteLine("File name: " + filelist.Value.getName() + "\t File extension: " + filelist.Value.getExtension() + "\t File Size: " + filelist.Value.getSize());
+                        Console.WriteLine("File name: " + filelist.Value.getName() + "\t File extension: " + filelist.Value.getExtension() + "\t File Size: " + filelist.Value.getSize() + " bytes");
                         filelist = filelist.Next;
                     }
                     break;
@@ -85,9 +93,7 @@ namespace CosmosKernel1
                 case "set":
 
                     int n;
-
                     node = Kernel.variables.First;
-
                     found = false;
 
                     try
@@ -108,20 +114,21 @@ namespace CosmosKernel1
                             node.Value.setValue(v1.getNumberValue());
                             found = true;
                             break;
-                        } else
+                        }
+                        else
                         {
                             node = node.Next;
                         }
                     }
-                    if(!found)
+                    if (!found)
                     {
                         Kernel.variables.AddLast(v1);
                     }
-
+                    Console.WriteLine(subStrings[1] + " = " + v2.getValue(subStrings[2]));
                     break;
 
                 case "add":
-
+               
                     node = Kernel.variables.First;
 
                     while (node != null)
@@ -274,7 +281,51 @@ namespace CosmosKernel1
                     break;
 
                 case "run":
+                    string content = "";
                     int numTimes = int.Parse(subStrings[1]);
+                    string[] bat = subStrings[2].Split('.');
+                    if (!(bat[1] == "bat"))
+                    {
+                        Console.WriteLine("Invalid file type. Only '.bat' file extensions can be used with the run command.");
+                    }
+                    else if (checkFileExists(subStrings[2]) == null)
+                    {
+                        Console.WriteLine(subStrings[2] + " does not exist.");
+                        return;
+                    }
+                    else
+                    {
+
+                        LinkedListNode<File> ll = Kernel.file_directory.First;
+                        while (ll != null)
+                        {
+                            if (ll.Value.getFileName() == subStrings[2])
+                            {
+                                content = ll.Value.getContent();
+                            }
+                            ll = ll.Next;
+                        }
+
+                        int index = 0; 
+                        bool eof = false;
+                        while (!eof) 
+                        {
+                            string line = ""; 
+
+                            while (content[index] != '\n')
+                            {
+                                line += content[index];
+                                index++;
+                            }
+                            if (index >= content.Length)
+                            {
+                                break;
+                            }
+                            index++;
+                            interpret(line); 
+                        }
+
+                    }
                     break;
 
                 case "runall":
@@ -285,5 +336,19 @@ namespace CosmosKernel1
                     break;
             }
         }
+
+        // Checks if the given File exists.
+        public static File checkFileExists(String name)
+        {
+            LinkedListNode<File> temp = Kernel.file_directory.First;
+            while (temp != null)
+            {
+                if (temp.Value.getName() == name)
+                    return temp.Value;
+                temp = temp.Next;
+            }
+            return null;
+        }
+
     }
 }       
