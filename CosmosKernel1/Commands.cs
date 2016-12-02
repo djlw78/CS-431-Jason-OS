@@ -331,9 +331,66 @@ namespace CosmosKernel1
                     break;
 
                 case "runall":
-                    string asdf = "";
+                    string[] fileNames = new string[subStrings.Length - 2];
                     int num = int.Parse(subStrings[1]);
-                    string[] batch = subStrings[2].Split('.');
+                    int counter = 0;
+                    string[] contents = new string[subStrings.Length - 2];
+                    for (int i = 2; i < subStrings.Length; i++)
+                    {
+                        fileNames[counter] = subStrings[i];
+                        counter++;
+                    }
+
+                    for (int j = 0; j < num; j++)
+                    {
+                        for (int i = 0; i < fileNames.Length; i++)
+                    {
+                        string[] batch = fileNames[i].Split('.');
+                            if (!(batch[1] == "bat"))
+                            {
+                                Console.WriteLine("Invalid file type. Only '.bat' file extensions can be used with the run command.");
+                            }
+                            else if (checkFileExists(fileNames[i]) == null)
+                            {
+                                Console.WriteLine(fileNames[i] + " does not exist.");
+                                return;
+                            }
+                            else
+                            {
+
+                                LinkedListNode<File> ll = Kernel.file_directory.First;
+                                while (ll != null)
+                                {
+                                    if (ll.Value.getFileName() == fileNames[i])
+                                    {
+                                        contents[i] = ll.Value.getContent();
+                                    }
+                                    ll = ll.Next;
+                                }
+
+                                int index = 0;
+                                while (true)
+                                {
+                                    string line = "";
+                                    string con = "";
+                                    con = contents[i];
+                                    while (con[index] != '\n')
+                                    {
+                                        line += con[index];
+                                        index++;
+                                    }
+                                    if (index >= con.Length)
+                                    {
+                                        break;
+                                    }
+                                    index++;
+                                    interpret(line);
+                                }
+                            }
+                        }
+                    }
+
+
                     break;
 
                 default:
