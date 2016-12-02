@@ -40,6 +40,7 @@ namespace CosmosKernel1
         public void setContent(string newContent)
         {
             content = newContent;
+            size += newContent.Length;
         }
 
         public string getContent()
