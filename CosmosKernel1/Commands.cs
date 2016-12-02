@@ -306,33 +306,38 @@ namespace CosmosKernel1
                             ll = ll.Next;
                         }
 
-                        int index = 0; 
-                        bool eof = false;
-                        while (!eof) 
+                        
+                        for (int i = 0; i < numTimes; i++)
                         {
-                            string line = ""; 
-
-                            while (content[index] != '\n')
+                            int index = 0;
+                            while (true)
                             {
-                                line += content[index];
+                                string line = "";
+
+                                while (content[index] != '\n')
+                                {
+                                    line += content[index];
+                                    index++;
+                                }
+                                if (index >= content.Length)
+                                {
+                                    break;
+                                }
                                 index++;
+                                interpret(line);
                             }
-                            if (index >= content.Length)
-                            {
-                                break;
-                            }
-                            index++;
-                            interpret(line); 
                         }
-
                     }
                     break;
 
                 case "runall":
+                    string asdf = "";
+                    int num = int.Parse(subStrings[1]);
+                    string[] batch = subStrings[2].Split('.');
                     break;
 
                 default:
-                    Console.WriteLine("Unknown Command");
+                    Console.WriteLine("Unknown Command. Please try again.");
                     break;
             }
         }
